@@ -1,6 +1,5 @@
 import { promises as fs } from "fs";
-import * as fsSync from "fs";
-
+//Function used to fetch data from the api
 async function fetchDATA(url: string, name: string) {
   console.log("Fetching data");
   try {
@@ -9,7 +8,7 @@ async function fetchDATA(url: string, name: string) {
       throw new Error("Data not found");
     }
     const data = await response.json();
-    //console.log(data); // Process the data as needed
+    //Processing the data by converting to string
     const JData = JSON.stringify(data);
     await JSON_File_Creator(JData, name);
     return data;
@@ -19,6 +18,7 @@ async function fetchDATA(url: string, name: string) {
   }
 }
 
+//Function used to create a JSON file
 const JSON_File_Creator = async (
   json_string: string,
   name: string
@@ -34,6 +34,7 @@ const JSON_File_Creator = async (
 };
 
 //ask about any and file types that
+// function used to find the top ten records
 const firstTen = async (file: any) => {
   console.log("Fetching first 10 records");
   try {
@@ -47,16 +48,15 @@ const firstTen = async (file: any) => {
   return top10;
 };
 
+// function parse over the given json string
 const parsingJSON = async (top10: Array<string>) => {
   let result: { [key: string]: number } = {};
   try {
     // Read the JSON file
-    const data = fsSync.readFileSync("coingecko_vs_currencies.json");
-
+    const data = await fs.readFile("coingecko_vs_currencies.json", "utf8");
     // Parse the JSON file
     const obj = JSON.parse(data.toString());
     const list = obj.rates;
-    //console.log(list);
     //Iterate over the JSON object
     for (let index = 0; index < top10.length; index++) {
       const element = top10[index];
@@ -71,9 +71,6 @@ const parsingJSON = async (top10: Array<string>) => {
   } catch (err) {
     console.error("Error reading or parsing file", err);
   }
-  // for (var key in result) {
-  //   console.log(key + " : " + result[key]);
-  // }
   const jResult = JSON.stringify(result, null, 2);
   JSON_File_Creator(jResult, "result");
 };
