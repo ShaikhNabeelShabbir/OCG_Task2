@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs_1 = require("fs");
-var fsSync = require("fs");
+//Function used to fetch data from the api
 function fetchDATA(url, name) {
     return __awaiter(this, void 0, void 0, function () {
         var response, data, JData, error_1;
@@ -71,6 +71,7 @@ function fetchDATA(url, name) {
         });
     });
 }
+//Function used to create a JSON file
 var JSON_File_Creator = function (json_string, name) { return __awaiter(void 0, void 0, void 0, function () {
     var err_1;
     return __generator(this, function (_a) {
@@ -94,6 +95,7 @@ var JSON_File_Creator = function (json_string, name) { return __awaiter(void 0, 
     });
 }); };
 //ask about any and file types that
+// function used to find the top ten records
 var firstTen = function (file) { return __awaiter(void 0, void 0, void 0, function () {
     var fileContent, data, top10, err_2;
     return __generator(this, function (_a) {
@@ -118,34 +120,43 @@ var firstTen = function (file) { return __awaiter(void 0, void 0, void 0, functi
         }
     });
 }); };
+// function parse over the given json string
 var parsingJSON = function (top10) { return __awaiter(void 0, void 0, void 0, function () {
-    var result, data, obj, list, index, element, x, jResult;
+    var result, data, obj, list, index, element, x, err_3, jResult;
     return __generator(this, function (_a) {
-        result = {};
-        try {
-            data = fsSync.readFileSync("coingecko_vs_currencies.json");
-            obj = JSON.parse(data.toString());
-            list = obj.rates;
-            //console.log(list);
-            //Iterate over the JSON object
-            for (index = 0; index < top10.length; index++) {
-                element = top10[index];
-                if (element in list) {
-                    x = 1 / list[element].value;
-                    console.log("".concat(element, ": ").concat(x, " bitcoin"));
-                    result[element] = x;
+        switch (_a.label) {
+            case 0:
+                result = {};
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, fs_1.promises.readFile("coingecko_vs_currencies.json", "utf8")];
+            case 2:
+                data = _a.sent();
+                obj = JSON.parse(data.toString());
+                list = obj.rates;
+                //Iterate over the JSON object
+                for (index = 0; index < top10.length; index++) {
+                    element = top10[index];
+                    if (element in list) {
+                        x = 1 / list[element].value;
+                        console.log("".concat(element, ": ").concat(x, " bitcoin"));
+                        result[element] = x;
+                    }
+                    else {
+                        console.log("Not Happen");
+                    }
                 }
-                else {
-                    console.log("Not Happen");
-                }
-            }
+                return [3 /*break*/, 4];
+            case 3:
+                err_3 = _a.sent();
+                console.error("Error reading or parsing file", err_3);
+                return [3 /*break*/, 4];
+            case 4:
+                jResult = JSON.stringify(result, null, 2);
+                JSON_File_Creator(jResult, "result");
+                return [2 /*return*/];
         }
-        catch (err) {
-            console.error("Error reading or parsing file", err);
-        }
-        jResult = JSON.stringify(result, null, 2);
-        JSON_File_Creator(jResult, "result");
-        return [2 /*return*/];
     });
 }); };
 // Main function to fetch data and process it
